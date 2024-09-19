@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: jemmy
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: mobile
+    ports:
+      - "2542:2542"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  nestjs:
+      build: .
+      container_name: my-nestjs
+      ports:
+        - "3399:3399"
+      depends_on:
+        - postgres
+      environment:
+        DATABASE_URL: postgres://jemmy:1234@localhost:5432/mobile
+      command: npm run start:prod
+
+volumes:
+  db-data:
